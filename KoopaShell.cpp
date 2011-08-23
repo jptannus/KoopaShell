@@ -53,9 +53,8 @@ int main(int argc, char *argv[]){
 			aux.clear();
 			printaMatriz(matriz);
 			geraArg(matriz, args);
-			i = execvp(matriz[0].c_str(),args);
-			if( i > 0)
-				cout << "Comando nao encontrado" << endl;
+			if(execvp(matriz[0].c_str(),args))
+				cout << "Comando nao encontrado " << endl;
 		}
 	}
 	return 0;
