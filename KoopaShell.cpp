@@ -15,51 +15,48 @@ void printaMatriz(vector<string> m){
 	cout << "------------------" << endl;
 }
 
-char ** geraArg(vector<string> m){
+void geraArg(vector<string> m, char *aux[]){
 	int i,j;
-	char *aux[m.size()];
-	char *aux2;
-	for(i = 0; i < m.size(); i++){
-		aux[i] = new char[m[i].length()];
-		strcpy(aux[i],m[i].c_str());
+	char *aux2[m.size()];
+	for(i = 1; i < m.size(); i++){
+		aux2[i-1] = new char[m[i].length()];
+		strcpy(aux2[i-1],m[i].c_str());
 	}
+	aux2[i-1] = NULL;
+	aux = aux2;
 }
 
 int main(int argc, char *argv[]){
 	vector<string> matriz;
 	string entrada, aux;
 	int sair = 0;
+	char **args;
 	int i,j;
-	pid_t PID = fork();	
 
-	if(PID > 0){
-		while(!sair){
-			matriz.clear();
-			cout << "koopa> ";
-			getline(cin,entrada,'\n');
-			if(!entrada.compare("exit")){
-				sair = 1;	
-			}else{
-				j = 0;
-				for(i = 0; i < entrada.length(); i++){
-					if(entrada[i] == ' '){
-						matriz.push_back(aux);
-						aux.clear();
-					}else{
-						aux.push_back(entrada[i]);
-					}		
-				}
-				matriz.push_back(aux);
-				aux.clear();
-				printaMatriz(matriz);
-				execvp("KoopaShell",geraArg(matriz));
+	while(!sair){
+		matriz.clear();
+		cout << "koopa> ";
+		getline(cin,entrada,'\n');
+		if(!entrada.compare("exit")){
+			sair = 1;	
+		}else{
+			j = 0;
+			for(i = 0; i < entrada.length(); i++){
+				if(entrada[i] == ' '){
+					matriz.push_back(aux);
+					aux.clear();
+				}else{
+					aux.push_back(entrada[i]);
+				}		
 			}
+			matriz.push_back(aux);
+			aux.clear();
+			printaMatriz(matriz);
+			geraArg(matriz, args);
+			i = execvp(matriz[0].c_str(),args);
+			if( i > 0)
+				cout << "Comando nao encontrado" << endl;
 		}
-	}else if(PID == 0){
-		
-	}else{
-		cout << "Falha no fork." << endl;
-		return 1;
 	}
 	return 0;
 }
